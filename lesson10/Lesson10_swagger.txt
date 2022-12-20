@@ -1,0 +1,247 @@
+openapi: 3.0.0
+info:
+  title: Robot order server
+  version: 0.0.1
+servers: 
+  - url: http://localhost:8080/api/v3/
+    description: Robots operation server for test development
+paths:
+  /robots:
+    get:
+      summary: Get all robots status
+      tags:
+        - Robots
+      operationId: getAllRobotsStatus
+      responses:
+        "200":
+           description: Successful responce. Get cloud's orders
+           content:
+             adplication/json:
+               schema:
+                 $ref: "#/components/schemas/Robots"
+        "default":
+           description: Error!!!
+           content:
+             adplication/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+  /robots/{robot_id}:
+    get:
+      summary: Get robot status
+      tags:
+        - Robots
+      operationId: getRobotStatusById
+      parameters:
+        - name: robot_id
+          in: path
+          required: true
+          description: Id of robot
+          schema:
+            type: string
+          example: f102b615
+      responses:
+        "200":
+           description: Successful responce. Get robot's status
+           content:
+             adplication/json:
+               schema:
+                 $ref: "#/components/schemas/Robot"
+        "default":
+           description: Error!!!
+           content:
+             adplication/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+  /tasks:
+    get:
+      summary: Get all robots tasks
+      tags:
+        - Tasks
+      operationId: getAllRobotsTasks
+      responses:
+        "200":
+           description: Successful responce. Get robot's tasks
+           content:
+             adplication/json:
+               schema:
+                 $ref: "#/components/schemas/Tasks"
+        "default":
+           description: Error!!!
+           content:
+             adplication/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+    post:
+      summary: Create robots task
+      tags:
+        - Tasks
+      operationId: createTasks
+      requestBody: 
+        required: true
+        content:
+          adplication/json:
+            schema:
+              $ref: "#/components/schemas/Error"
+      responses:
+        "200":
+          description: Successful responce. Set robot's tasks
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Tasks"
+        "default":
+          description: Error!!!
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /tasks/{task_id}:
+    get:
+      summary: Get robot task by id
+      tags:
+        - Tasks
+      operationId: getRobotTaskById
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: Id of task
+          schema:
+            type: string
+          example: f102b615
+      responses:
+        "200":
+           description: Successful responce. Task status by ID
+           content:
+             adplication/json:
+               schema:
+                 $ref: "#/components/schemas/Task"
+        "default":
+           description: Error!!!
+           content:
+             adplication/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+    delete:
+      summary: Cancel robot task
+      tags: 
+        - Tasks
+      operationId: cencelRobotTask
+      parameters:
+       - name: task_id
+         in: path
+         required: true
+         description: ID of robot
+         schema:
+           type: string
+         example: f102b615
+      responses:
+        "200":
+           description: Successful responce. Task was deleted
+           content:
+             adplication/json: {}
+        "default":
+           description: Error!!!
+           content:
+             adplication/json:
+               schema:
+                 $ref: "#/components/schemas/Error"               
+components:
+  schemas:
+    Robot:
+      type: object
+      required:
+        - Robot_id
+        - Model
+        - Version
+        - Hours_of_work
+        - Load
+        - IP
+        - Group_id
+        - Mac_address
+        - Status
+        - Comment
+      properties:
+        Robot_id:
+          type: integer
+          example: 3
+        Model:
+          type: string
+          example: Robot_123
+        Version:
+          type: string
+          example: b123_s32
+        Hours_of_work:
+          type: integer
+          example: 112
+        Load:
+          type: integer
+          example: 50
+        IP:
+          type: string
+          example: 127.0.0.1
+        Group_id:
+          type: integer
+          example: 2
+        Mac_address:
+          type: string
+          example: ff:ff:ff:ff:ff
+        Status:
+          type: string
+          enum:
+            - clean
+            - charge
+            - wait
+            - error
+            - loaded
+            - off
+          description: Robot's status
+        Comment:
+          type: string
+          example: Test comment
+    Robots:
+      type: array
+      items:
+        $ref: "#/components/schemas/Robot"
+    Task:
+      type: object
+      required:
+        - Task_id
+        - StartTime
+        - StopTime
+        - Option
+        - Robot_id
+        - Comment
+      properties:
+        Task_id:
+          type: integer
+          example: 12345678
+        StartTime:
+          type: string
+          example: 2022-12-10 15:00
+        StopTime:
+          type: string
+          example: 2022-12-10 16:00
+        Option:
+          type: string
+          example: clean
+        Robot_id:
+          type: integer
+          example: 3
+        Comment:
+          type: string
+          example: Test comment
+    Tasks:
+      type: array
+      items:
+        $ref: "#/components/schemas/Task"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
